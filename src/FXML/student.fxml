@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.StudentController">
+   <children>
+      <Label fx:id="myLabel" alignment="CENTER" layoutX="200.0" layoutY="125.0" prefHeight="30.0" prefWidth="199.0" text="JOINED AS STUDENT">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Button layoutX="253.0" layoutY="254.0" mnemonicParsing="false" onAction="#setText" text="VIEW SESSION" />
+   </children>
+</AnchorPane>
