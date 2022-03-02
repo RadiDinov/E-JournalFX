@@ -1,6 +1,7 @@
 package Controllers;
 
 import JDBC.JDBC;
+import SaltHasher.BCryptPasswordHashing;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,14 +21,15 @@ public class MainController {
 
     }
 
-    //OBJECTS
+    //Salt Hasher
     private BCryptPasswordHashing bCryptPasswordHashing = new BCryptPasswordHashing(12);
-    //JDBC OBJECTS
-    private static JDBC jdbcUpdatePassword;
-    //JDBC OBJECTS
-    //OBJECTS
+    //Salt Hasher
 
-    //INJECTION
+    //JDBC
+    private static JDBC jdbcUpdatePassword;
+    //JDBC
+
+    //Scene Builder getting objects
     @FXML
     AnchorPane anchorPaneMain;
     @FXML
@@ -36,9 +38,9 @@ public class MainController {
     PasswordField passwordField;
     @FXML
     Label errorLabel;
-    //INJECTION
+    //Scene Builder getting objects
 
-    //PRIVATE
+    //Variables
     private String firstName;
     private String lastName;
     private String email;
@@ -47,9 +49,7 @@ public class MainController {
     private String position;
 
     private boolean passwordMatch;
-    private boolean successfulSignIn;
-    private boolean signedInForTheFirstTimeOnlyEmail;
-    private boolean signedInForTheFirstTime;
+    //Variables
 
     //GUI
     private Stage stage;
@@ -57,47 +57,73 @@ public class MainController {
     private Parent root;
     //GUI
 
+    //If button 'Sign In' is clicked
     public void trySignIn(ActionEvent event) throws IOException, SQLException {
+
         jdbcUpdatePassword = new JDBC("select * from registrations", "UPDATE registrations SET password = ? WHERE email = ?");
+
+        //Creating new Salt Hasher with security 12(max 16)
         this.bCryptPasswordHashing = new BCryptPasswordHashing(12);
-        this.successfulSignIn = false;
-        this.signedInForTheFirstTimeOnlyEmail = false;
-        this.signedInForTheFirstTime = false;
+        //Creating new Salt Hasher with security 12(max 16)
+
+        //Temp booleans
+        boolean successfulSignIn = false;
+        boolean signedInForTheFirstTimeOnlyEmail = false;
+        boolean signedInForTheFirstTime = false;
+        //Temp booleans
+
         try {
+            //Cycling through every object from SQL table 'registrations'
             while (jdbcUpdatePassword.resultSet.next()) {
+
+                //Making sure password is not null, so the Salt Hasher can be created
                 if (jdbcUpdatePassword.resultSet.getString("password") != null) {
                     this.passwordMatch = bCryptPasswordHashing.verifyPassword(passwordField.getText().toCharArray(), jdbcUpdatePassword.resultSet.getString("password"));
                 }
+                //Making sure password is not null, so the Salt Hasher can be created
+
+
+                //If new Person entered Email + password, set password as his own password
                 if (jdbcUpdatePassword.resultSet.getString("email").equals(emailField.getText()) && jdbcUpdatePassword.resultSet.getString("password") == null && !(passwordField.getText().trim().isEmpty())) {
-                    this.signedInForTheFirstTime = true;
-                    this.successfulSignIn = true;
-//                    System.out.println("Email + password inserted");
+                    signedInForTheFirstTime = true;
+                    successfulSignIn = true;
                     break;
+                //If new Person entered Email + password, set password as his own password
+
+                //If new Person entered only Email, ask him to add password
                 } else if (jdbcUpdatePassword.resultSet.getString("email").equals(emailField.getText()) && jdbcUpdatePassword.resultSet.getString("password") == null) {
                     System.out.println("Only email inserted");
-                    this.signedInForTheFirstTimeOnlyEmail = true;
-                    this.successfulSignIn = true;
+                    signedInForTheFirstTimeOnlyEmail = true;
+                    successfulSignIn = true;
                     break;
+                //If new Person entered only Email, ask him to add password
+
+                //If the Person already has a registration, check its position then redirect to its position's Stage
                 } else if (jdbcUpdatePassword.resultSet.getString("email").equals(emailField.getText()) && passwordMatch) {
+
+                    //Switching by Signed In Person's position
                     switch (jdbcUpdatePassword.resultSet.getString("position")) {
+
+                        //If position equals 'Headmaster'
                         case "Headmaster" -> {
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/headmaster.fxml"));
                             this.root = loader.load();
                             HeadmasterController headmasterController = loader.getController();
-                            headmasterController.getInformation(jdbcUpdatePassword.resultSet.getString("firstName"), jdbcUpdatePassword.resultSet.getString("lastName"), jdbcUpdatePassword.resultSet.getString("email"), jdbcUpdatePassword.resultSet.getString("password"), jdbcUpdatePassword.resultSet.getString("egn"), jdbcUpdatePassword.resultSet.getString("position"));
+                            headmasterController.storeCurrentHeadmaster(jdbcUpdatePassword.resultSet.getString("firstName"), jdbcUpdatePassword.resultSet.getString("lastName"), jdbcUpdatePassword.resultSet.getString("email"), jdbcUpdatePassword.resultSet.getString("password"), jdbcUpdatePassword.resultSet.getString("egn"), jdbcUpdatePassword.resultSet.getString("position"));
                             this.stage = (Stage) (((Node) event.getSource()).getScene().getWindow());
                             this.scene = new Scene(root, 1280, 720);
                             this.stage.setScene(scene);
                             this.stage.centerOnScreen();
                             scene.getRoot().requestFocus();
                             stage.show();
-                            this.successfulSignIn = true;
+                            successfulSignIn = true;
                         }
+                        //If position equals 'Headmaster'
+
+                        //If position equals 'Student'
                         case "Student" -> {
                             FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/student.fxml"));
                             this.root = loader.load();
-//                            HeadmasterController headmasterController = loader.getController();
-//                            headmasterController.getInformation(jdbcUpdatePassword.resultSet.getString("firstName"), jdbcUpdatePassword.resultSet.getString("lastName"), jdbcUpdatePassword.resultSet.getString("email"), jdbcUpdatePassword.resultSet.getString("password"), jdbcUpdatePassword.resultSet.getString("egn"), jdbcUpdatePassword.resultSet.getString("position"));
                             StudentController studentController = loader.getController();
                             studentController.getInformation(jdbcUpdatePassword.resultSet.getString("firstName"), jdbcUpdatePassword.resultSet.getString("lastName"), jdbcUpdatePassword.resultSet.getString("email"), jdbcUpdatePassword.resultSet.getString("password"), jdbcUpdatePassword.resultSet.getString("egn"), jdbcUpdatePassword.resultSet.getString("position"));
                             this.stage = (Stage) (((Node) event.getSource()).getScene().getWindow());
@@ -106,21 +132,40 @@ public class MainController {
                             this.stage.centerOnScreen();
                             scene.getRoot().requestFocus();
                             stage.show();
-                            this.successfulSignIn = true;
+                            successfulSignIn = true;
                         }
+                        //If position equals 'Student'
+
                     }
+                    //Switching by Signed In Person's position
+
                 }
+                //If the Person already has a registration, check its position then redirect to its position's Stage
+
             }
+            //Cycling through every object from SQL table 'registrations'
         } catch (SQLException throwable) {
-            throwable.printStackTrace();
+            throwable.printStackTrace(); //TODO: Create custom Exceptions
         }
+
+
         jdbcUpdatePassword.resultSet.beforeFirst(); //TODO: test if can be removed
+
+        //If new Person entered only Email
         if (signedInForTheFirstTimeOnlyEmail) {
             this.errorLabel.setText("Welcome, please insert password and remember it!");
         }
+        //If new Person entered only Email
+
+        //If new Person entered both Email and Password
         if (signedInForTheFirstTime) {
             this.errorLabel.setText("You just set your password. Remember it!");
+
+            //Salt Hashing its password
             String hashedPassword = bCryptPasswordHashing.hashPassword(passwordField.getText().toCharArray());
+            //Salt Hashing its password
+
+            //Updating the null password with the Salt Hashed one in SQL
             try {
                 jdbcUpdatePassword.writeData.setString(1, hashedPassword);
                 jdbcUpdatePassword.writeData.setString(2, emailField.getText());
@@ -128,12 +173,20 @@ public class MainController {
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
+            //Updating the null password with the Salt Hashed one in SQL
+
         }
+        //If new Person entered both Email and Password
+
+        //If entries are not valid
         if (!successfulSignIn) {
             jdbcUpdatePassword.resultSet.beforeFirst();
             this.errorLabel.setText("Please check your entries and try again.");
         }
+        //If entries are not valid
+
     }
+    //If button 'Sign In' is clicked
 
     public String getFirstName() {
         return firstName;

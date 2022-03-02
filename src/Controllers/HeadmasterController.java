@@ -1,5 +1,6 @@
 package Controllers;
 
+import Objects.Headmaster;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,15 +11,17 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class HeadmasterController {
-//    private String firstName;
-//    private String lastName;
 
+    //Objects
+    Headmaster headmaster;
+    //Objects
 
+    //Scene Builder getting objects
     @FXML
     Label myLabel;
+    //Scene Builder getting objects
 
     //GUI
     private Stage stage;
@@ -26,23 +29,16 @@ public class HeadmasterController {
     private Parent root;
     //GUI
 
-    private ArrayList<HeadmasterController> headmasterData = new ArrayList();
-
-    MainController currentHeadmasterData = new MainController();
-
-//    public HeadmasterController(String firstName, String lastName) {
-//        this.firstName = firstName;
-//        this.lastName = lastName;
-//    }
-
-
-    public void setText() {
-        myLabel.setText(currentHeadmasterData.getFirstName() + " " + currentHeadmasterData.getLastName());
-    }
-
+    //If button 'Add students' is clicked
     public void addStudents(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/addStudentsStage.fxml"));
         this.root = loader.load();
+
+        //Sending headmaster info to AddStudentsController
+        AddStudentsController addStudentsController = loader.getController();
+        addStudentsController.transferHeadmaster(headmaster);
+        //Sending headmaster info to AddStudentsController
+
         this.stage = (Stage)(((Node)event.getSource()).getScene().getWindow());
         this.scene = new Scene(root, 1280, 720);
         this.stage.setScene(scene);
@@ -50,14 +46,23 @@ public class HeadmasterController {
         scene.getRoot().requestFocus();
         stage.show();
     }
+    //If button 'Add students' is clicked
 
-    public void getInformation(String firstName, String lastName, String email, String password, String egn, String position) {
-        currentHeadmasterData.setFirstName(firstName);
-        currentHeadmasterData.setLastName(lastName);
-        currentHeadmasterData.setEmail(email);
-        currentHeadmasterData.setPassword(password);
-        currentHeadmasterData.setEgn(egn);
-        currentHeadmasterData.setPosition(position);
-//        headmasterData.add(new HeadmasterController(currentHeadmasterData.getFirstName(), currentHeadmasterData.getLastName()));
+    //Getting headmaster info from Sign In
+    public void storeCurrentHeadmaster(String firstName, String lastName, String email, String egn, String telephoneNumber, String position) {
+        headmaster = new Headmaster(firstName, lastName, email, egn, telephoneNumber, position);
     }
+    //Getting headmaster info from Sign In
+
+    //Making sure our headmaster info is not lost
+    public void transferHeadmaster(Headmaster headmaster) {
+        this.headmaster = headmaster;
+    }
+    //Making sure our headmaster info is not lost
+
+    //If button 'View session' is clicked (DEMO)
+    public void setText() {
+        myLabel.setText(headmaster.getFirstName() + " " + headmaster.getLastName());
+    }
+    //If button 'View session' is clicked (DEMO)
 }

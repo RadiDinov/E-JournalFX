@@ -4,10 +4,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 public class StudentController {
+    //TODO: Rework StudentController + Add Comments
     MainController currentStudentData = new MainController();
 
     @FXML
     Label myLabel;
+
 
     public void getInformation(String firstName, String lastName, String email, String password, String egn, String position) {
         currentStudentData.setFirstName(firstName);

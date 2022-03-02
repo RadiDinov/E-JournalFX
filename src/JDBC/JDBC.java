@@ -2,7 +2,8 @@ package JDBC;
 
 import java.sql.*;
 
-public class JDBC {
+public class JDBC { //Adding JDBC to the project as object
+
     final String jdbcURL = "jdbc:mysql://localhost:3306/javafx";
     final String jdbcUser = "root";
     final String jdbcPassword = "";

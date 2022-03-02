@@ -22,19 +22,22 @@ public class Main extends Application {
         String css = url.toExternalForm();
         scene.getStylesheets().add(css);
         //Add .css file
+
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
         scene.getRoot().requestFocus();
         primaryStage.show();
 
-
+        //When trying to close the program
         primaryStage.setOnCloseRequest(event -> {
             event.consume();
             logout(primaryStage);
         });
+        //When trying to close the program
     }
 
+    //Pop-up when trying to close the program
     public void logout(Stage stage) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");
@@ -46,6 +49,7 @@ public class Main extends Application {
             stage.close();
         }
     }
+    //Pop-up when trying to close the program
 
 
     public static void main(String[] args) {
