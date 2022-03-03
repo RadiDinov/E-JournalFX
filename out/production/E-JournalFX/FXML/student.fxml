@@ -5,13 +5,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.StudentController">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.Student.StudentController">
    <children>
-      <Label fx:id="myLabel" alignment="CENTER" layoutX="200.0" layoutY="125.0" prefHeight="30.0" prefWidth="199.0" text="JOINED AS STUDENT">
+      <Label fx:id="myLabel" alignment="CENTER" layoutX="547.0" layoutY="44.0" prefHeight="30.0" prefWidth="199.0" text="JOINED AS STUDENT">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Button layoutX="253.0" layoutY="254.0" mnemonicParsing="false" onAction="#setText" text="VIEW SESSION" />
+      <Button layoutX="598.0" layoutY="138.0" mnemonicParsing="false" onAction="#setText" text="VIEW SESSION" />
    </children>
 </AnchorPane>

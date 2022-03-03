@@ -1,5 +1,7 @@
 package Controllers;
 
+import Controllers.Headmaster.HeadmasterController;
+import Controllers.Student.StudentController;
 import JDBC.JDBC;
 import SaltHasher.BCryptPasswordHashing;
 import javafx.event.ActionEvent;

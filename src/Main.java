@@ -56,3 +56,14 @@ public class Main extends Application {
         launch(args);
     }
 }
+
+//TODO: when adding student check if there is already section from it's substring(indexes [0,3] none-excluded) - Example 18126 - 181
+
+
+//        sectionsMenu.getItems().add(new MenuItem("181")); //adding section 181
+//        sectionsMenu.getItems().add(new MenuItem("182")); //adding section 182
+//        for (int i = 0; i < sectionsMenu.getItems().size(); i++) { //for to get every sectionMenu item name
+//            System.out.println(sectionsMenu.getItems().get(i).getText());
+//        }
+
+//        sectionsMenu.getItems().get(0).setOnAction(event -> System.out.println("asd")); //setting onAction event to [0] - section 181

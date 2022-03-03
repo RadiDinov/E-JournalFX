@@ -9,6 +9,7 @@ public class JDBC { //Adding JDBC to the project as object
     final String jdbcPassword = "";
     public Connection connection = DriverManager.getConnection(jdbcURL, jdbcUser, jdbcPassword);
     public Statement readData = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+    public Statement statement;
     public PreparedStatement writeData;
     public ResultSet resultSet;
 
@@ -19,6 +20,12 @@ public class JDBC { //Adding JDBC to the project as object
         writeData = connection.prepareStatement(jdbcRegistrations); //sqlRequestInsertNewRegistration
     }
 
+    public JDBC(String resultSet) throws SQLException {
+        statement = connection.createStatement();
+        this.resultSet = statement.executeQuery(resultSet); //Show tables
+    }
 
-
+    public ResultSet getResultSet() {
+        return resultSet;
+    }
 }
