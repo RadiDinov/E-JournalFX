@@ -1,7 +1,7 @@
 package Controllers.Headmaster;
 
 import Controllers.Headmaster.Stages.AddSections;
-import Controllers.Headmaster.Stages.AddStudents;
+import Controllers.Headmaster.Stages.Management;
 import Objects.Headmaster;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,7 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -39,11 +38,11 @@ public class HeadmasterController {
 
     //If menuItem 'Add students' is clicked
     public void addStudents() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../FXML/addStudentsStage.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../FXML/ManagementStage.fxml"));
         this.root = loader.load();
 
         //Sending headmaster info to AddStudents
-        AddStudents addStudents = loader.getController();
+        Management addStudents = loader.getController();
         addStudents.transferHeadmaster(headmaster);
         //Sending headmaster info to AddStudents
 

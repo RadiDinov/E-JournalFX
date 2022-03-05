@@ -9,16 +9,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
 
 public class AddSections {
 
@@ -53,13 +49,18 @@ public class AddSections {
 
 
     public void addSection() throws SQLException {
+        //TODO: make sure sectionField has length 3 -> 181(GOOD); 1811(BAD)
+
+        //TODO: open connection again to prevent creating new object every time button 'Add Student' is clicked
         jdbcGetTables.resultSet = jdbcGetTables.statement.executeQuery("Show tables");
+        //TODO: open connection again to prevent creating new object every time button 'Add Student' is clicked
+
         //Resetting the errorLabel ArrayList
         errorLabel.setText("");
         //Resetting the errorLabel ArrayList
 
         //Booleans for matches
-        boolean existingTable = false;
+        boolean isThereATableThatEqualsSection = false;
         //Booleans for matches
 
         //This string is representing the table's name
@@ -70,32 +71,44 @@ public class AddSections {
 
             //If there is already a table with this section
             if (sectionFieldString.equals(jdbcGetTables.getResultSet().getString(1))) {
-                existingTable = true;
+                isThereATableThatEqualsSection = true;
                 break;
             }
             //If there is already a table with this section
         }
 
-
-        if (existingTable) {
+        //If there is already a table that equals section
+        if (isThereATableThatEqualsSection) {
             errorLabel.setText("Section: " + sectionField.getText() + " is not available!");
-        } else {
-            String name = "Section_" + sectionField.getText();
+        }
+        //If there is already a table that equals section
+
+        //If there isn't a table that equals section
+        else {
+
+            //This string is representing the table's name
+            String name = "section_" + sectionField.getText();
+            //This string is representing the table's name
+
+            //Trying to create the table
             try {
                 String sql = "CREATE TABLE " + name + " ("
                         + "id INT NOT NULL AUTO_INCREMENT,"
                         + "firstName VARCHAR(255),"
                         + "lastName VARCHAR(255),"
                         + "classNumber VARCHAR(255),"
-                        + "grades VARCHAR(255),"
                         + "position VARCHAR(255),"
                         + "PRIMARY KEY(id))";
                 jdbcGetTables.statement.executeUpdate(sql);
                 errorLabel.setText("Successfully added new section: " + sectionField.getText());
-            } catch (SQLException e) {
+
+            //Trying to create the table
+
+            } catch (SQLException e) { //TODO: make custom exceptions!
                 System.out.println(e.getMessage());
             }
         }
+        //If there isn't a table that equals section
 
     }
 

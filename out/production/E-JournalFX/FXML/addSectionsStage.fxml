@@ -6,12 +6,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.Headmaster.Stages.AddSections">
    <children>
       <Button layoutX="27.0" layoutY="669.0" mnemonicParsing="false" onAction="#goBackToHeadmasterStage" prefHeight="30.0" prefWidth="76.0" text="Go back" />
       <TextField fx:id="sectionField" layoutX="30.0" layoutY="30.0" prefHeight="40.0" prefWidth="200.0" promptText="Section" />
-      <Button layoutX="80.0" layoutY="80.0" mnemonicParsing="false" onAction="#addSection" prefHeight="40.0" prefWidth="100.0" text="Add student" />
+      <Button layoutX="80.0" layoutY="80.0" mnemonicParsing="false" onAction="#addSection" prefHeight="40.0" prefWidth="100.0" text="Add section" />
       <Label fx:id="errorLabel" alignment="TOP_LEFT" layoutX="40.0" layoutY="507.0" prefHeight="100.0" prefWidth="500.0" textFill="RED">
          <font>
             <Font size="14.0" />

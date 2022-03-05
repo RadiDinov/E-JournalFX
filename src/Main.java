@@ -1,3 +1,4 @@
+import SaltHasher.BCryptPasswordHashing;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +13,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+//        BCryptPasswordHashing bCryptPasswordHashing = new BCryptPasswordHashing(12);
+//        char[] arr = new char[] {'1', '2', '3'};
+//        System.out.println(bCryptPasswordHashing.hashPassword(arr));
+
         primaryStage.setTitle("E-Journal");
         Parent root = FXMLLoader.load(getClass().getResource("FXML/main.fxml"));
         Scene scene = new Scene(root, 600, 455);
@@ -57,7 +62,9 @@ public class Main extends Application {
     }
 }
 
-//TODO: when adding student check if there is already section from it's substring(indexes [0,3] none-excluded) - Example 18126 - 181
+//TODO: make custom exceptions!
+//TODO: work on adding teachers and setting them to be class teachers if needed
+
 
 
 //        sectionsMenu.getItems().add(new MenuItem("181")); //adding section 181
