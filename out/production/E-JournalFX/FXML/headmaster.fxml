@@ -13,20 +13,10 @@
             <Font size="20.0" />
          </font>
       </Label>
-<!--      <Button layoutX="40.0" layoutY="300.0" mnemonicParsing="false" onAction="#viewAllStudents" prefHeight="50.0" prefWidth="200.0" text="View all students">-->
-<!--         <font>-->
-<!--            <Font size="20.0" />-->
-<!--         </font>-->
-<!--      </Button>-->
-      <MenuButton fx:id="sectionsMenu" layoutX="49.0" layoutY="118.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="190.0" text="Sections">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </MenuButton>
       <MenuButton layoutX="51.0" layoutY="214.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="190.0" text="Management">
          <items>
             <MenuItem mnemonicParsing="false" onAction="#addSections" text="Add sections" />
-            <MenuItem mnemonicParsing="false" onAction="#addStudents" text="Add students" />
+            <MenuItem mnemonicParsing="false" onAction="#addStudents" text="Add/remove people" />
          </items>
          <font>
             <Font size="20.0" />
