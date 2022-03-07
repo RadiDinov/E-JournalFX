@@ -63,11 +63,12 @@ public class Main extends Application {
 }
 
 //TODO: make custom exceptions!
-//TODO: when adding new student check if email's length till @ -> (18126) is == 5
-//TODO: when adding new student check if class number's length is == 5
-//TODO: when adding teacher with class number == "-" make it work :)
 
+//TODO: add teacher then you can assign this teacher with a class
+//TODO: when adding teacher with class number == "-" make it work :)
+//TODO: remove section from class number field
 //TODO: at all... rewrite Management.java
+//TODO: if first + last name is entered in bulgarian, make email english
 
 
 
