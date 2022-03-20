@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +26,8 @@ public class Management {
     static JDBC jdbcAddNewTeacher; //primary keys - email, classTeacherOfASection TODO: work on adding teachers and setting them to be class teachers if needed
     static JDBC jdbcGetTables;
     static JDBC jdbcAddNewStudent;
+    static JDBC jdbcRegistrationUpdateTeacher;
+    static JDBC jdbcTeacherUpdatePosition;
     //JDBC
 
     //Objects
@@ -56,6 +57,10 @@ public class Management {
     TextField positionField;
     @FXML
     Label errorLabel;
+    @FXML
+    TextField classTeacherAddEmailField;
+    @FXML
+    TextField classTeacherAddSectionField;
     //Scene Builder getting objects
 
     //ArrayList to store data for incorrect add student options
@@ -192,7 +197,7 @@ public class Management {
             //If there are any occupied primary keys, add error texts to errorList ArrayList
 
             //If adding teacher
-            if(!classNumberField.getText().equals("-")) {
+            if (!classNumberField.getText().equals("-")) {
 
                 //Booleans for matches
                 isThereATableThatEqualsSection = false;
@@ -217,7 +222,6 @@ public class Management {
 
             }
             //If adding teacher
-
 
 
             //TODO: optimize and remove!
@@ -252,11 +256,11 @@ public class Management {
                                             jdbcAddNewStudent = new JDBC("select * from " + classNumberFieldModifiedForSQL, "INSERT INTO " + classNumberFieldModifiedForSQL + " (firstName, lastName, classNumber, position) VALUES (?, ?, ?, ?)");
                                             //TODO: open connection again to prevent creating new object every time button 'Add Student' is clicked
 
-                                            //If resultSet is empty, this means that there is no class teacher
+                                            //If resultSet is empty, this means that there is no Class Teacher
                                             if (!jdbcAddNewStudent.resultSet.next()) {
                                                 errorLabel.setText("Cannot create a new student in section: " + classNumberField.getText().substring(0, 3) + "\nbecause this section does not have a class teacher!");
                                             }
-                                            //If resultSet is empty, this means that there is no class teacher
+                                            //If resultSet is empty, this means that there is no Class Teacher
 
                                             //If resultSet is not empty
                                             else {
@@ -265,8 +269,8 @@ public class Management {
                                                 jdbcAddNewStudent.resultSet.absolute(1);
                                                 //Selecting first row's data
 
-                                                //If first row's selected position equals Teacher
-                                                if (jdbcAddNewStudent.resultSet.getString("position").equals("Teacher")) {
+                                                //If first row's selected position equals Class Teacher
+                                                if (jdbcAddNewStudent.resultSet.getString("position").equals("Class Teacher")) {
 
                                                     //Adding student in registrations table
                                                     jdbcAddNewRegistration.writeData.setString(1, classNumberField.getText());
@@ -291,13 +295,13 @@ public class Management {
                                                     //Inserting student into its section
 
                                                 }
-                                                //If first row's selected position equals Teacher
+                                                //If first row's selected position equals Class Teacher
 
-                                                //If first row's selected position does not equal Teacher
+                                                //If first row's selected position does not equal Class Teacher
                                                 else {
                                                     errorLabel.setText("Cannot create a new student in section: " + classNumberField.getText().substring(0, 3) + "\nbecause this section does not have a class teacher!");
                                                 }
-                                                //If first row's selected position does not equal Teacher
+                                                //If first row's selected position does not equal Class Teacher
 
                                             }
                                             //If resultSet is not empty
@@ -463,7 +467,19 @@ public class Management {
 
     public void setTextFieldsForTeacher() {
         if (!(firstNameField.getText().equals("")) && !(lastNameField.getText().equals(""))) {
-            String formEmail = firstNameField.getText().toLowerCase().charAt(0) + "." + lastNameField.getText().toLowerCase() + "@uktc-bg.com";
+            String regex = "[AEIOUaeiou]";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(firstNameField.getText());
+
+            String firstName = firstNameField.getText();
+            String lastName = lastNameField.getText();
+            if (!matcher.find()) {
+                firstName = convertCyrillic(firstName);
+                lastName = convertCyrillic(lastName);
+            }
+            //TODO: if inserted first and last name are cyrillic
+            //TODO: if inserted first and last name are not cyrillic
+            String formEmail = firstName.toLowerCase().charAt(0) + "." + lastName.toLowerCase() + "@uktc-bg.com";
             emailField.setText(formEmail);
         }
         classNumberField.setText("-");
@@ -481,4 +497,157 @@ public class Management {
         errorLabel.setText("");
     }
 
+    public static String convertCyrillic(String message) {
+        char[] abcCyr = {' ', 'я', 'в', 'е', 'р', 'т', 'ъ', 'у', 'и', 'о', 'п', 'ш', 'щ', 'а', 'с', 'д', 'ф', 'г', 'х', 'й', 'к', 'л', 'ю', 'з', 'ь', 'ц', 'ж', 'б', 'н', 'м', 'ч', 'Ч', 'Я', 'В', 'Е', 'Р', 'Т', 'Ъ', 'У', 'И', 'О', 'П', 'Ш', 'Щ', 'А', 'С', 'Д', 'Ф', 'Г', 'Х', 'Й', 'К', 'Л', 'Ю', 'З', 'Ь', 'Ц', 'Ж', 'Б', 'Н', 'М'};
+        String[] abcLat = {" ", "ya", "v", "e", "r", "t", "a", "i", "i", "o", "p", "sh", "sht", "a", "s", "d", "f", "g", "h", "i", "k", "l", "iu", "z", "io", "c", "zh", "b", "n", "m", "ch", "Ch", "Ya", "V", "E", "R", "T", "A", "I", "I", "O", "P", "Sh", "Sht", "A", "S", "D", "F", "G", "H", "I", "K", "L", "Iu", "Z", "Io", "C", "Zh", "B", "N", "M"};
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < message.length(); i++) {
+            for (int x = 0; x < abcCyr.length; x++) {
+                if (message.charAt(i) == abcCyr[x]) {
+                    builder.append(abcLat[x]);
+                }
+            }
+        }
+        return builder.toString();
+    }
+
+    public void addNewClassTeacher() throws SQLException {
+        //Resetting the errorLabel and errorList
+        errorLabel.setText("");
+        errorList.clear();
+        //Resetting the errorLabel and errorList
+
+
+        isThereATableThatEqualsSection = false;
+
+        jdbcGetTables = new JDBC("Show tables");
+
+        jdbcTeacherUpdatePosition = new JDBC("select * from teachers", "UPDATE teachers SET classTeacherOfASection = ? WHERE email = ?");
+
+        jdbcRegistrationUpdateTeacher = new JDBC("select * from registrations", "UPDATE registrations SET classNumber = ?, position = ? WHERE email = ?");
+
+        boolean emailFieldCheck = false;
+        boolean sectionFieldCheck = false;
+        boolean teacherIsAlreadyAClassTeacher = true;
+        boolean sectionHasClassTeacher = true;
+        boolean addedNewClassTeacher = false;
+
+        classNumberFieldModifiedForSQL = "section_" + classTeacherAddSectionField.getText();
+
+        while (jdbcGetTables.getResultSet().next()) {
+
+            //If there is already a table with this section
+            if (classNumberFieldModifiedForSQL.equals(jdbcGetTables.getResultSet().getString(1))) {
+                isThereATableThatEqualsSection = true;
+                break;
+            }
+            //If there is already a table with this section
+
+        }
+
+        if (isThereATableThatEqualsSection) {
+            //TODO: open connection again to prevent creating new object every time button 'Add Student' is clicked
+            jdbcAddNewStudent = new JDBC("select * from " + classNumberFieldModifiedForSQL, "INSERT INTO " + classNumberFieldModifiedForSQL + " (firstName, lastName, classNumber, position) VALUES (?, ?, ?, ?)");
+            //TODO: open connection again to prevent creating new object every time button 'Add Student' is clicked
+
+            jdbcAddNewStudent.resultSet.beforeFirst();
+        }
+
+        while (jdbcTeacherUpdatePosition.resultSet.next()) {
+            if (jdbcTeacherUpdatePosition.resultSet.getString("email").equals(classTeacherAddEmailField.getText())) {
+                emailFieldCheck = true;
+                while (jdbcRegistrationUpdateTeacher.resultSet.next()) {
+                    if (jdbcRegistrationUpdateTeacher.resultSet.getString("position").equals("Teacher")) {
+                        teacherIsAlreadyAClassTeacher = false;
+                        if (isThereATableThatEqualsSection) {
+                            sectionFieldCheck = true;
+                            if (!jdbcAddNewStudent.getResultSet().next()) {
+                                sectionHasClassTeacher = false;
+
+                                jdbcAddNewStudent.writeData.setString(1, jdbcTeacherUpdatePosition.resultSet.getString("firstName"));
+                                jdbcAddNewStudent.writeData.setString(2, jdbcTeacherUpdatePosition.resultSet.getString("lastName"));
+                                jdbcAddNewStudent.writeData.setString(3, classTeacherAddSectionField.getText());
+                                jdbcAddNewStudent.writeData.setString(4, "Class Teacher");
+                                jdbcAddNewStudent.writeData.executeUpdate();
+                                jdbcAddNewStudent.writeData.close();
+
+                                if (jdbcRegistrationUpdateTeacher.resultSet.getString("email").equals(classTeacherAddEmailField.getText())) {
+                                    jdbcRegistrationUpdateTeacher.writeData.setString(1, classTeacherAddSectionField.getText());
+                                    jdbcRegistrationUpdateTeacher.writeData.setString(2, "Class Teacher");
+                                    jdbcRegistrationUpdateTeacher.writeData.setString(3, classTeacherAddEmailField.getText());
+                                    jdbcRegistrationUpdateTeacher.writeData.executeUpdate();
+                                    jdbcRegistrationUpdateTeacher.writeData.close();
+                                }
+
+                                jdbcTeacherUpdatePosition.writeData.setString(1, classTeacherAddSectionField.getText());
+                                jdbcTeacherUpdatePosition.writeData.setString(2, classTeacherAddEmailField.getText());
+                                jdbcTeacherUpdatePosition.writeData.executeUpdate();
+
+                                errorLabel.setText("Added new class teacher: " + jdbcTeacherUpdatePosition.resultSet.getString("firstName") + " " + jdbcTeacherUpdatePosition.resultSet.getString("lastName") + "\nEmail: " + jdbcTeacherUpdatePosition.resultSet.getString("email") + "\nClass teacher of the section: " + classTeacherAddSectionField.getText());
+                                addedNewClassTeacher = true;
+                                jdbcTeacherUpdatePosition.writeData.close();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(!addedNewClassTeacher) {
+            if (sectionHasClassTeacher) {
+                errorLabel.setText("Section already has Class Teacher!");
+            }
+            if (!sectionFieldCheck) {
+                errorLabel.setText("Section not found!");
+            }
+            if (teacherIsAlreadyAClassTeacher) {
+                errorLabel.setText("Teacher is already a Class Teacher!");
+                //TODO: maybe add which section errorList.add("in section: " + ...);
+            }
+            if (!emailFieldCheck) {
+                errorLabel.setText("There is no teacher with that email!");
+            }
+        }
+
+    }
+
 }
+
+
+//Selecting first row's data
+//                                                jdbcAddNewStudent.resultSet.absolute(1);
+//                                                        //Selecting first row's data
+//
+//                                                        //If first row's selected position equals Class Teacher
+//                                                        if (jdbcAddNewStudent.resultSet.getString("position").equals("Class Teacher")) {
+//
+//                                                        //Adding student in registrations table
+//                                                        jdbcAddNewRegistration.writeData.setString(1, classNumberField.getText());
+//                                                        jdbcAddNewRegistration.writeData.setString(2, firstNameField.getText());
+//                                                        jdbcAddNewRegistration.writeData.setString(3, lastNameField.getText());
+//                                                        jdbcAddNewRegistration.writeData.setString(4, emailField.getText());
+//                                                        jdbcAddNewRegistration.writeData.setString(5, EGNField.getText());
+//                                                        jdbcAddNewRegistration.writeData.setString(6, telephoneNumberField.getText());
+//                                                        jdbcAddNewRegistration.writeData.setString(7, positionField.getText());
+//                                                        jdbcAddNewRegistration.writeData.executeUpdate();
+//                                                        jdbcAddNewRegistration.writeData.close();
+//                                                        //Adding student in registrations table
+//
+//                                                        //Inserting student into its section
+//                                                        jdbcAddNewStudent.writeData.setString(1, firstNameField.getText());
+//                                                        jdbcAddNewStudent.writeData.setString(2, lastNameField.getText());
+//                                                        jdbcAddNewStudent.writeData.setString(3, classNumberField.getText());
+//                                                        jdbcAddNewStudent.writeData.setString(4, positionField.getText());
+//                                                        jdbcAddNewStudent.writeData.executeUpdate();
+//                                                        jdbcAddNewStudent.writeData.close();
+//                                                        errorLabel.setText("Added new student: " + firstNameField.getText() + " " + lastNameField.getText());
+//                                                        //Inserting student into its section
+//
+//                                                        }
+//                                                        //If first row's selected position equals Teacher
+//
+//                                                        //If first row's selected position does not equal Teacher
+//                                                        else {
+//                                                        errorLabel.setText("Cannot create a new student in section: " + classNumberField.getText().substring(0, 3) + "\nbecause this section does not have a class teacher!");
+//                                                        }
+//If first row's selected position does not equal Teacher

@@ -62,14 +62,9 @@ public class Main extends Application {
     }
 }
 
-//TODO: make custom exceptions!
-
-//TODO: add teacher then you can assign this teacher with a class
-//TODO: when adding teacher with class number == "-" make it work :)
-//TODO: remove section from class number field
-//TODO: at all... rewrite Management.java
-//TODO: if first + last name is entered in bulgarian, make email english
-
+//TODO: make custom exceptions
+//TODO: make headmaster design
+//TODO: remove teacher as a class teacher
 
 
 //        sectionsMenu.getItems().add(new MenuItem("181")); //adding section 181

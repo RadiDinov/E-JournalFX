@@ -2,6 +2,7 @@ package Controllers;
 
 import Controllers.Headmaster.HeadmasterController;
 import Controllers.Student.StudentController;
+import Controllers.Teacher.TeacherController;
 import JDBC.JDBC;
 import SaltHasher.BCryptPasswordHashing;
 import javafx.event.ActionEvent;
@@ -121,6 +122,22 @@ public class MainController {
                             successfulSignIn = true;
                         }
                         //If position equals 'Headmaster'
+
+                        //If position equals 'Teacher'
+                        case "Teacher", "Class Teacher" -> {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/teacher.fxml"));
+                            this.root = loader.load();
+//                            TeacherController teacherController = loader.getController();
+//                            teacherController.getInformation(jdbcUpdatePassword.resultSet.getString("firstName"), jdbcUpdatePassword.resultSet.getString("lastName"), jdbcUpdatePassword.resultSet.getString("email"), jdbcUpdatePassword.resultSet.getString("password"), jdbcUpdatePassword.resultSet.getString("egn"), jdbcUpdatePassword.resultSet.getString("position"));
+                            this.stage = (Stage) (((Node) event.getSource()).getScene().getWindow());
+                            this.scene = new Scene(root, 1280, 720);
+                            this.stage.setScene(scene);
+                            this.stage.centerOnScreen();
+                            scene.getRoot().requestFocus();
+                            stage.show();
+                            successfulSignIn = true;
+                        }
+                        //If position equals 'Teacher'
 
                         //If position equals 'Student'
                         case "Student" -> {
